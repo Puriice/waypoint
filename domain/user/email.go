@@ -1,7 +1,9 @@
 package user
 
 import (
+	"database/sql/driver"
 	"errors"
+	"fmt"
 	"net/mail"
 	"strings"
 
@@ -140,4 +142,26 @@ func (e Email) Domain() string {
 	}
 
 	return email[i+1:]
+}
+
+func (e *Email) Scan(src any) error {
+	if src == nil {
+		return nil
+	}
+
+	switch v := src.(type) {
+	case string:
+		email, err := NewEmail(v)
+		if err != nil {
+			return err
+		}
+		*e = email
+		return nil
+	default:
+		return fmt.Errorf("unsupported type %T for Email", src)
+	}
+}
+
+func (e Email) Value() (driver.Value, error) {
+	return string(e), nil
 }

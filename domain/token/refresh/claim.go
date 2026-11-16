@@ -3,17 +3,17 @@ package refresh
 import (
 	"uuid"
 
-	"github.com/puriice/waypoint/domain"
 	"github.com/puriice/waypoint/domain/errors"
+	"github.com/puriice/waypoint/domain/user"
 )
 
 type Claims struct {
-	SessionID uuid.UUID              `json:"session_id"`
-	FamilyID  uuid.UUID              `json:"family_id"`
-	Key       domain.SensitiveString `json:"k"`
+	SessionID uuid.UUID     `json:"session_id"`
+	FamilyID  uuid.UUID     `json:"family_id"`
+	Key       user.Password `json:"k"`
 }
 
-func NewClaims(sessionID, familyID, key string) (Claims, error) {
+func NewClaims(sessionID, familyID string, key user.Password) (Claims, error) {
 	sessionUUID, err := uuid.Parse(sessionID)
 
 	if err != nil {
@@ -29,6 +29,6 @@ func NewClaims(sessionID, familyID, key string) (Claims, error) {
 	return Claims{
 		SessionID: sessionUUID,
 		FamilyID:  familyUUID,
-		Key:       domain.NewSensitiveString(key),
+		Key:       key,
 	}, nil
 }
