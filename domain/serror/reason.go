@@ -81,3 +81,11 @@ var (
 		Message:    "internal_error",
 	}
 )
+
+var (
+	InvalidCredential = Reason{
+		HTTPStatus: http.StatusUnauthorized,
+		Code:       2,
+		Message:    "invalid_credential",
+	}
+)

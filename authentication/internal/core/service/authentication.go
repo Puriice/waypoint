@@ -16,6 +16,7 @@ import (
 )
 
 const REFRESH_KEY_SIZE = 64
+const dummyHash = "this-is-a-dummy-hash"
 
 type repositoryDependency struct {
 	authentication repository.Authentication
@@ -65,17 +66,14 @@ func (s AuthenticationServiceImpl) Register(ctx app.Context, command cmd.Registe
 
 	password := command.Password()
 
-	if hashed, err := s.hasher.Hash(password.Expose()); err != nil {
+	if err := password.Apply(s.hasher.Hash); err != nil {
 		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.System, serror.General, serror.FailToHash)
-	} else {
-		password = _user.NewPassword(hashed)
 	}
 
 	key := s.key.Generate(REFRESH_KEY_SIZE)
+	hashedKey := key
 
-	hashedKey, err := s.hasher.Hash(key.Expose())
-
-	if err != nil {
+	if err := hashedKey.Apply(s.hasher.Hash); err != nil {
 		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.System, serror.General, serror.FailToHash)
 	}
 
@@ -104,7 +102,7 @@ func (s AuthenticationServiceImpl) Register(ctx app.Context, command cmd.Registe
 
 	if err != nil {
 		go func(ctx context.Context, authRepo repository.Authentication, userID uuid.UUID) {
-			authRepo.Delete(ctx, userID)
+			authRepo.DeleteUser(ctx, userID)
 		}(ctx, s.repository.authentication, user.ID)
 
 		switch {
@@ -121,5 +119,55 @@ func (s AuthenticationServiceImpl) Register(ctx app.Context, command cmd.Registe
 }
 
 func (s AuthenticationServiceImpl) Login(ctx app.Context, command cmd.Login) (_user.User, token.Pair, error) {
-	panic("unimplemented")
+	email, err := command.Email()
+
+	if err != nil {
+		s.hasher.Verify("password", dummyHash)
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	fingerprint, err := command.Fingerprint()
+
+	if err != nil {
+		s.hasher.Verify("password", dummyHash)
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	password := command.Password()
+
+	user, err := s.repository.authentication.GetByEmail(ctx, email)
+
+	if !s.hasher.Verify(password.Expose(), user.Password.Expose()) {
+		go s.applyPenalties(ctx, user)
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	key := s.key.Generate(REFRESH_KEY_SIZE)
+	hashedKey := key
+
+	if err := hashedKey.Apply(s.hasher.Hash); err != nil {
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	session, claims, err := s.repository.authentication.NewSession(ctx, user, fingerprint, hashedKey)
+
+	if err != nil {
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	pair, err := s.token.Sign(ctx, user, session, claims)
+
+	if err != nil {
+		go func(ctx context.Context, authRepo repository.Authentication, sessionID uuid.UUID) {
+			authRepo.DeleteSession(ctx, sessionID)
+		}(ctx, s.repository.authentication, session.ID)
+
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
+
+	return user, pair, nil
+}
+
+func (s AuthenticationServiceImpl) applyPenalties(ctx app.Context, user _user.User) {
+
 }

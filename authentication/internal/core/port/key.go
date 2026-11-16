@@ -1,7 +1,9 @@
 package port
 
-import "github.com/puriice/waypoint/domain"
+import (
+	"github.com/puriice/waypoint/domain/user"
+)
 
 type Key interface {
-	Generate(size int) domain.SensitiveString
+	Generate(size int) user.Password
 }

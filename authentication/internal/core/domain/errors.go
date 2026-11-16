@@ -12,7 +12,7 @@ var (
 )
 
 var (
-	ErrUserNotFound = errors.New("User not found.")
+	ErrNotFound = errors.New("Resource not found.")
 )
 
 var (
