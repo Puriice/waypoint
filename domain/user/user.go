@@ -1,22 +1,46 @@
 package user
 
+import (
+	"uuid"
+
+	"github.com/puriice/waypoint/domain/errors"
+)
+
 type User struct {
-	UserID   string
-	Username []string
-	Email    string
+	ID       uuid.UUID
+	Username Username
+	Email    Email
 	Password Password
 }
 
 func NewUser(
 	userID string,
-	username []string,
+	username string,
 	email string,
 	password string,
-) User {
-	return User{
-		UserID:   userID,
-		Username: username,
-		Email:    email,
-		Password: NewPassword(password),
+) (User, error) {
+	userUUID, err := uuid.Parse(userID)
+
+	if err != nil {
+		return User{}, errors.NewErrInvalidUUID(userID, "user")
 	}
+
+	usrname, err := NewUsername(username)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	emil, err := NewEmail(email)
+
+	if err != nil {
+		return User{}, err
+	}
+
+	return User{
+		ID:       userUUID,
+		Username: usrname,
+		Email:    emil,
+		Password: NewPassword(password),
+	}, nil
 }
