@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS users (
     email               TEXT NOT NULL,
     username			TEXT NOT NULL,
     password_hash       TEXT NOT NULL,
-    is_email_verified   BOOLEAN NOT NULL DEFAULT FALSE,
+    email_verified_at   TIMESTAMPTZ,
     deactivated_at      TIMESTAMPTZ,
     locked_until        TIMESTAMPTZ,
     quarantine_at       TIMESTAMPTZ,
