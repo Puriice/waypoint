@@ -16,7 +16,7 @@ import (
 )
 
 const REFRESH_KEY_SIZE = 64
-const dummyHash = "this-is-a-dummy-hash"
+const dummyInput = "this-is-a-dummy-hash"
 
 type repositoryDependency struct {
 	authentication repository.Authentication
@@ -27,6 +27,7 @@ type AuthenticationServiceImpl struct {
 	token      port.AuthenticationTokenizer
 	key        port.Key
 	hasher     port.Hasher
+	dummyHash  string
 }
 
 func NewAuthenticationService(
@@ -35,13 +36,20 @@ func NewAuthenticationService(
 	key port.Key,
 	hasher port.Hasher,
 ) port.AuthenticationService {
+	dummyHash, err := hasher.Hash(dummyInput)
+
+	if err != nil {
+		panic(err)
+	}
+
 	return AuthenticationServiceImpl{
 		repository: repositoryDependency{
 			authentication: authenticaton,
 		},
-		token:  token,
-		key:    key,
-		hasher: hasher,
+		token:     token,
+		key:       key,
+		hasher:    hasher,
+		dummyHash: dummyHash,
 	}
 }
 
@@ -119,23 +127,27 @@ func (s AuthenticationServiceImpl) Register(ctx app.Context, command cmd.Registe
 }
 
 func (s AuthenticationServiceImpl) Login(ctx app.Context, command cmd.Login) (_user.User, token.Pair, error) {
+	password := command.Password()
 	email, err := command.Email()
 
 	if err != nil {
-		s.hasher.Verify("password", dummyHash)
+		s.hasher.Verify(password.Expose(), s.dummyHash)
 		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
 	}
 
 	fingerprint, err := command.Fingerprint()
 
 	if err != nil {
-		s.hasher.Verify("password", dummyHash)
+		s.hasher.Verify(password.Expose(), s.dummyHash)
 		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
 	}
 
-	password := command.Password()
-
 	user, err := s.repository.authentication.GetByEmail(ctx, email)
+
+	if err != nil {
+		s.hasher.Verify(password.Expose(), s.dummyHash)
+		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
+	}
 
 	if !s.hasher.Verify(password.Expose(), user.Password.Expose()) {
 		go s.applyPenalties(ctx, user)
@@ -154,6 +166,8 @@ func (s AuthenticationServiceImpl) Login(ctx app.Context, command cmd.Login) (_u
 	if err != nil {
 		return _user.User{}, token.Pair{}, serror.NewServiceError(serror.Authentication, serror.Login, serror.InvalidCredential)
 	}
+
+	claims.Key = key
 
 	pair, err := s.token.Sign(ctx, user, session, claims)
 
