@@ -1,0 +1,15 @@
+{
+  "services": [
+    "authentication"
+  ],
+  "migrationsDir": "migrations",
+  "targets": [
+    {
+      "name": "Development",
+      "driver": "postgres",
+      "host": "localhost",
+      "database": "waypoint",
+      "user": "mee2"
+    }
+  ]
+}
