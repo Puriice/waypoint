@@ -3,7 +3,8 @@
 CREATE TABLE IF NOT EXISTS users (
     id                  UUID PRIMARY KEY DEFAULT uuidv7(),
     version             INT NOT NULL DEFAULT 0,
-    email               TEXT NOT NULL UNIQUE,
+    email               TEXT NOT NULL,
+    username			TEXT NOT NULL,
     password_hash       TEXT NOT NULL,
     is_email_verified   BOOLEAN NOT NULL DEFAULT FALSE,
     deactivated_at      TIMESTAMPTZ,
@@ -12,6 +13,10 @@ CREATE TABLE IF NOT EXISTS users (
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     created_at          TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
+    CONSTRAINT user_email_unique
+    	UNIQUE(email),
+    CONSTRAINT user_username_unique
+    	UNIQUE(username),
     CONSTRAINT user_email_not_empty
         CHECK (octet_length(btrim(email)) > 0),
     CONSTRAINT user_password_hash_not_empty
