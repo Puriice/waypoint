@@ -5,7 +5,7 @@ go 1.27.2
 require (
 	github.com/golang-jwt/jwt/v5 v5.3.1
 	github.com/jackc/pgx/v5 v5.13.0
-	github.com/puriice/waypoint/domain v0.0.0-20261116165231-58e1434176c5
+	github.com/puriice/waypoint/domain v0.0.0-20261117110024-1b06d3bcbd0e
 	github.com/stretchr/testify v1.12.1
 )
 
