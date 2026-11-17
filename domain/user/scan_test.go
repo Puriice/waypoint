@@ -1,6 +1,7 @@
 package user_test
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/puriice/waypoint/domain/user"
@@ -33,4 +34,18 @@ func TestEmailScanRejectsInvalidEmail(t *testing.T) {
 
 	require.ErrorIs(t, e.Scan("not-an-email"), user.ErrInvalidEmail)
 	assert.Equal(t, user.Email("before@example.com"), e, "failed scan must not overwrite the value")
+}
+
+func TestPasswordJSONIsPlainString(t *testing.T) {
+	data, err := json.Marshal(struct {
+		Key user.Password `json:"k"`
+	}{user.NewPassword("secret")})
+	require.NoError(t, err)
+	assert.JSONEq(t, `{"k":"secret"}`, string(data))
+
+	var got struct {
+		Key user.Password `json:"k"`
+	}
+	require.NoError(t, json.Unmarshal(data, &got))
+	assert.Equal(t, "secret", got.Key.Expose())
 }
