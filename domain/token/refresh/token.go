@@ -4,18 +4,22 @@ import (
 	"crypto/rsa"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/puriice/waypoint/domain"
 )
 
 type Token struct {
 	jwt.RegisteredClaims
 	Claims
-	signed string
+	signed domain.SensitiveString `json:"-"`
 }
 
-func NewToken(registerClaims jwt.RegisteredClaims, claims Claims) Token {
+// NewToken builds a refresh token. signed is the encoded JWT the claims came
+// from, or an empty value for a token that has not been signed yet.
+func NewToken(registerClaims jwt.RegisteredClaims, claims Claims, signed domain.SensitiveString) Token {
 	return Token{
 		RegisteredClaims: registerClaims,
 		Claims:           claims,
+		signed:           signed,
 	}
 }
 
@@ -26,11 +30,11 @@ func (t *Token) Sign(key *rsa.PrivateKey) error {
 		return err
 	}
 
-	t.signed = signed
+	t.signed = domain.NewSensitiveString(signed)
 
 	return nil
 }
 
-func (t Token) SignedToken() string {
+func (t Token) SignedToken() domain.SensitiveString {
 	return t.signed
 }

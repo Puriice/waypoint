@@ -12,6 +12,6 @@ import (
 
 type AuthenticationTokenizer interface {
 	Sign(context context.Context, user user.User, session domain.Session, refresh refresh.Claims) (token.Pair, error)
-	Verify(context context.Context, token access.Token) error
-	RotateToken(context context.Context, refresh refresh.Token) (token.Pair, error)
+	VerifyAccessToken(context context.Context, token string) (access.Token, error)
+	VerifyRefreshToken(context context.Context, token string) (refresh.Token, error)
 }

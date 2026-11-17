@@ -12,16 +12,19 @@ type Token struct {
 	jwt.RegisteredClaims
 	Email     string `json:"email"`
 	SessionID string `json:"session_id"`
-	signed    string `json:"-"`
+	signed    domain.SensitiveString `json:"-"`
 }
 
-func NewToken(claims jwt.RegisteredClaims, user user.User, session domain.Session) Token {
+// NewToken builds an access token. signed is the encoded JWT the claims came
+// from, or an empty value for a token that has not been signed yet.
+func NewToken(claims jwt.RegisteredClaims, user user.User, session domain.Session, signed domain.SensitiveString) Token {
 	claims.Subject = user.ID.String()
 
 	return Token{
 		RegisteredClaims: claims,
 		Email:            user.Email.String(),
 		SessionID:        session.ID.String(),
+		signed:           signed,
 	}
 }
 
@@ -32,11 +35,11 @@ func (t *Token) Sign(key *rsa.PrivateKey) error {
 		return err
 	}
 
-	t.signed = signed
+	t.signed = domain.NewSensitiveString(signed)
 
 	return nil
 }
 
-func (t Token) SignedToken() string {
+func (t Token) SignedToken() domain.SensitiveString {
 	return t.signed
 }
