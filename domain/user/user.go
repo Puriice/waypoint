@@ -52,3 +52,11 @@ func NewUser(
 		Password: NewPassword(password),
 	}, nil
 }
+
+func (u User) IsDuringCooldown(now time.Time) bool {
+	return u.LockedUntil != nil && u.LockedUntil.After(now)
+}
+
+func (u User) IsDuringQuarantine() bool {
+	return u.QuarantineAt != nil
+}
