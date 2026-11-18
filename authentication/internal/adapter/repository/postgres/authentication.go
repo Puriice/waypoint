@@ -265,3 +265,15 @@ func (r AuthenticationRepository) DeleteSession(ctx context.Context, sessionID u
 
 	return nil
 }
+
+func (r AuthenticationRepository) Lock(ctx context.Context, user user.User, until time.Time) (user.User, error) {
+	panic("unimplement")
+}
+
+func (r AuthenticationRepository) Block(ctx context.Context, user user.User, unlockKeyHash user.Password) (user.User, error) {
+	panic("unimplement")
+}
+
+func (r AuthenticationRepository) Unblock(ctx context.Context, user user.User) (user.User, error) {
+	panic("unimplement")
+}

@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 	"uuid"
 
 	"github.com/puriice/waypoint/domain"
@@ -15,4 +16,11 @@ type Authentication interface {
 	GetByEmail(ctx context.Context, email user.Email) (user.User, error)
 	DeleteUser(ctx context.Context, id uuid.UUID) error
 	DeleteSession(ctx context.Context, id uuid.UUID) error
+	Lock(ctx context.Context, user user.User, until time.Time) (user.User, error)
+	Block(ctx context.Context, user user.User, unlockTokenHash user.Password) (user.User, error)
+	Unblock(ctx context.Context, user user.User) (user.User, error)
+}
+
+type LoginCounter interface {
+	Count(ctx context.Context, user user.User) (int, error)
 }
