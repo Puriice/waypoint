@@ -10,7 +10,6 @@ import { useEffect, useRef } from "react";
 const PRIMARY_LINKS = [
     { label: "Popular", href: "" },
     { label: "Library", href: "" },
-    { label: "Merchant", href: "" },
 ];
 
 export default function Header() {
@@ -147,7 +146,23 @@ export default function Header() {
                                             href=""
                                             className={profile.profile_link}
                                         >
+                                            Merchants
+                                        </a>
+                                    </li>
+                                    <li className={profile.menu_item}>
+                                        <a
+                                            href=""
+                                            className={profile.profile_link}
+                                        >
                                             Settings
+                                        </a>
+                                    </li>
+                                    <li className={profile.menu_item}>
+                                        <a
+                                            href=""
+                                            className={profile.profile_link}
+                                        >
+                                            Help
                                         </a>
                                     </li>
                                     <li className={profile.menu_item}>
