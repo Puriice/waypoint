@@ -39,3 +39,22 @@
 	font-size: smaller;
 	font-weight: bolder;
 }
+
+@media (max-width: 1024px) {
+	.container {
+		margin: auto 0;
+	}
+}
+
+@media (max-width: 768px) {
+	.container {
+		order: 3;
+		flex-basis: 100%;
+		margin: 0 0 4px;
+	}
+
+	/* No keyboard shortcut hint on touch-sized screens */
+	.slash {
+		display: none;
+	}
+}

@@ -4,7 +4,14 @@ import profile from "./profile.module.scss";
 import search from "./search.module.scss";
 import CartIcon from "@/assets/icons/cart";
 import StarIcon from "@/assets/icons/star";
+import MenuIcon from "@/assets/icons/menu";
 import { useEffect, useRef } from "react";
+
+const PRIMARY_LINKS = [
+    { label: "Popular", href: "" },
+    { label: "Library", href: "" },
+    { label: "Merchant", href: "" },
+];
 
 export default function Header() {
     const searchRef = useRef<HTMLInputElement>(null);
@@ -36,29 +43,35 @@ export default function Header() {
 
     return (
         <header className={css.root}>
+            <input
+                type="checkbox"
+                id="menu_toggle"
+                className={css.menu_toggle}
+                aria-label="Menu"
+                aria-controls="mobile_menu"
+            />
             <div className={css.content}>
-                <nav className={css.navbar_container}>
+                <label htmlFor="menu_toggle" className={css.menu_btn}>
+                    <MenuIcon className={css.menu_icon_closed} />
+                    <MenuIcon open className={css.menu_icon_open} />
+                </label>
+                <nav className={`${css.navbar_container} ${css.primary_nav}`}>
                     <ul className={css.navbar_list}>
                         <li className={css.navbar_item}>
                             <a href="" className={css.navbar_link}>
                                 <h1 className={css.title}>Waystore</h1>
                             </a>
                         </li>
-                        <li className={css.navbar_item}>
-                            <a href="" className={css.navbar_link}>
-                                Popular
-                            </a>
-                        </li>
-                        <li className={css.navbar_item}>
-                            <a href="" className={css.navbar_link}>
-                                Library
-                            </a>
-                        </li>
-                        <li className={css.navbar_item}>
-                            <a href="" className={css.navbar_link}>
-                                Merchant
-                            </a>
-                        </li>
+                        {PRIMARY_LINKS.map((link) => (
+                            <li
+                                key={link.label}
+                                className={`${css.navbar_item} ${css.desktop_only}`}
+                            >
+                                <a href={link.href} className={css.navbar_link}>
+                                    {link.label}
+                                </a>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
                 <div className={search.container}>
@@ -73,16 +86,24 @@ export default function Header() {
                 <nav className={`${css.navbar_container} ${css.justify_right}`}>
                     <ul className={css.navbar_list}>
                         <li className={css.navbar_item}>
-                            <a href="" className={css.navbar_link}>
+                            <a
+                                href=""
+                                className={css.navbar_link}
+                                aria-label="Wishlist"
+                            >
                                 <StarIcon className={css.link_icon} />
-                                Wishlist
+                                <span className={css.label}>Wishlist</span>
                             </a>
                         </li>
                         <li className={css.navbar_item}>
-                            <a href="" className={css.navbar_link}>
+                            <a
+                                href=""
+                                className={css.navbar_link}
+                                aria-label="Cart, 0 items"
+                            >
                                 <div className={cart.container}>
                                     <CartIcon className={cart.icon} />
-                                    Cart 0
+                                    <span className={css.label}>Cart </span>0
                                 </div>
                             </a>
                         </li>
@@ -102,6 +123,8 @@ export default function Header() {
                                     type="checkbox"
                                     id="profile_menu"
                                     className={profile.checkbox}
+                                    aria-label="Profile Menu"
+                                    aria-controls="profile_menu"
                                 />
                                 <ul className={profile.menus}>
                                     <li className={profile.menu_item}>
@@ -141,6 +164,17 @@ export default function Header() {
                     </ul>
                 </nav>
             </div>
+            <nav id="mobile_menu" className={css.mobile_menu}>
+                <ul className={css.mobile_list}>
+                    {PRIMARY_LINKS.map((link) => (
+                        <li key={link.label}>
+                            <a href={link.href} className={css.mobile_link}>
+                                {link.label}
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </nav>
         </header>
     );
 }
