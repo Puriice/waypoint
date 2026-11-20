@@ -1,0 +1,41 @@
+@use '$shared/color';
+@use './variables';
+
+.container {
+	flex-grow: 2;
+	margin: auto 2rem;
+
+	position: relative;
+}
+
+.input_bar {
+	width: 100%;
+	height: variables.$item-height;
+	border: 1px solid color.$border;
+	border-radius: 8px;
+	padding: 0 16px;
+
+	background: color.$secondary-background;
+	color: color.$primary-text;
+
+	font-size: 1rem;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.slash {
+	position: absolute;
+	top: 50%;
+	right: 6px;
+	transform: translateY(-50%);
+	padding: 2px 8px;
+
+	color: color.$secondary-text;
+	border: 1px solid color.$border;
+	border-radius: 8px;
+
+	font-size: smaller;
+	font-weight: bolder;
+}

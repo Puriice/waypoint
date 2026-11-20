@@ -1,0 +1,30 @@
+@use '$shared/_color.scss';
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	background: color.$primary-background;
+}
+
+body,
+p {
+	margin: 0;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+	color: color.$primary-text;
+	margin: 0px;
+}
+
+a {
+	text-decoration: none;
+	color: color.$primary_text;
+}

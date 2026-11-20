@@ -1,0 +1,76 @@
+@use "$shared/color";
+@use "./variables";
+
+.container {
+	position: relative;
+}
+
+.btn {
+	display: block;
+	height: variables.$item-height;
+	cursor: pointer;
+}
+
+.picture {
+	width: variables.$item-height;
+	height: variables.$item-height;
+	border-radius: 50%;
+	border: 1px solid color.$border;
+}
+
+.checkbox {
+	display: none;
+
+	&:checked+.menus {
+		display: block;
+	}
+}
+
+.menus {
+	background: color.$raised-background;
+	list-style: none;
+	margin: 0;
+	padding: 8px 0;
+	border-radius: 8px;
+	width: auto;
+	display: none;
+
+	position: absolute;
+	top: calc(100% + 16px);
+	right: 0;
+	z-index: 1;
+}
+
+.menu_item {
+	padding: 8px 12px;
+	display: block;
+
+	&:not(:first-of-type) {
+		border-top: 1px solid color.$border;
+	}
+}
+
+.detail {
+	width: max-content;
+	padding: 0 6px 4px 4px;
+
+	display: grid;
+	grid-template-columns: variables.$item-height 1fr;
+	grid-template-rows: repeat(variables.$item-height /2, 2);
+	gap: 0 8px;
+}
+
+.picture {
+	grid-row: span 2;
+}
+
+.name {
+	color: color.$primary-text;
+	align-self: start;
+}
+
+.link {
+	font-size: small;
+	color: color.$secondary-text;
+	align-self: end;
+}
