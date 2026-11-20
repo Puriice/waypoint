@@ -1,39 +1,11 @@
-@use '$shared/color';
+@use '$shared/effects';
 @use './variables';
 
 .container {
-	background: linear-gradient(120deg,
-			color.$accent-color,
-			#c86dd7,
-			#6a8dff,
-			color.$accent-color);
-	background-size: 300% 100%;
-	box-shadow: 0 0 12px rgba(color.$accent-color, 0.55);
-	border-radius: 4px;
+	@include effects.glowing-gradient;
 	height: 32px;
 	line-height: 32px;
 	padding: 0 8px;
-	transition: box-shadow 0.2s ease;
-
-	&:hover {
-		box-shadow: 0 0 10px rgba(color.$accent-hover-color, 0.8);
-		animation: glow-shift 6s linear forwards infinite;
-
-		@media (prefers-reduced-motion: reduce) {
-			animation: none;
-		}
-	}
-
-}
-
-@keyframes glow-shift {
-	from {
-		background-position: 0% 50%;
-	}
-
-	to {
-		background-position: 300% 50%;
-	}
 }
 
 .icon {
