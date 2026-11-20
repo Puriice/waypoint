@@ -5,6 +5,7 @@ import search from "./search.module.scss";
 import CartIcon from "@/assets/icons/cart";
 import StarIcon from "@/assets/icons/star";
 import MenuIcon from "@/assets/icons/menu";
+import SearchIcon from "@/assets/icons/search";
 import { useEffect, useRef } from "react";
 
 const PRIMARY_LINKS = [
@@ -74,13 +75,21 @@ export default function Header() {
                     </ul>
                 </nav>
                 <div className={search.container}>
-                    <input
-                        ref={searchRef}
-                        type="text"
-                        className={search.input_bar}
-                        placeholder="What are you looking for?"
-                    />
-                    <div className={search.slash}>/</div>
+                    <div className={search.box}>
+                        <input
+                            ref={searchRef}
+                            type="text"
+                            className={search.input_bar}
+                            placeholder="What are you looking for?"
+                        />
+                        <div className={search.slash}>/</div>
+                    </div>
+                    <button
+                        className={search.button}
+                        aria-label="Search"
+                    >
+                        <SearchIcon className={search.button_icon} />
+                    </button>
                 </div>
                 <nav className={`${css.navbar_container} ${css.justify_right}`}>
                     <ul className={css.navbar_list}>
