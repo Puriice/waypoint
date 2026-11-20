@@ -3,7 +3,7 @@ import cart from "./cart.module.scss";
 import profile from "./profile.module.scss";
 import search from "./search.module.scss";
 import CartIcon from "@/assets/icons/cart";
-import StarIcon from "@/assets/icons/star";
+import BooksIcon from "@/assets/icons/books";
 import MenuIcon from "@/assets/icons/menu";
 import SearchIcon from "@/assets/icons/search";
 import { useEffect, useRef } from "react";
@@ -11,7 +11,7 @@ import { Form } from "react-router";
 
 const PRIMARY_LINKS = [
     { label: "Popular", href: "" },
-    { label: "Library", href: "" },
+    { label: "Wishlist", href: "" },
 ];
 
 export default function Header() {
@@ -106,10 +106,10 @@ export default function Header() {
                             <a
                                 href=""
                                 className={css.navbar_link}
-                                aria-label="Wishlist"
+                                aria-label="Library"
                             >
-                                <StarIcon className={css.link_icon} />
-                                <span className={css.label}>Wishlist</span>
+                                <BooksIcon className={css.link_icon} />
+                                <span className={css.label}>Library</span>
                             </a>
                         </li>
                         <li className={css.navbar_item}>
