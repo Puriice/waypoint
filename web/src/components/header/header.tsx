@@ -7,6 +7,7 @@ import StarIcon from "@/assets/icons/star";
 import MenuIcon from "@/assets/icons/menu";
 import SearchIcon from "@/assets/icons/search";
 import { useEffect, useRef } from "react";
+import { Form } from "react-router";
 
 const PRIMARY_LINKS = [
     { label: "Popular", href: "" },
@@ -74,23 +75,31 @@ export default function Header() {
                         ))}
                     </ul>
                 </nav>
-                <div className={search.container}>
+                <Form
+                    method="get"
+                    action="/search"
+                    role="search"
+                    className={search.container}
+                >
                     <div className={search.box}>
                         <input
                             ref={searchRef}
-                            type="text"
+                            type="search"
+                            name="q"
+                            aria-label="Search"
                             className={search.input_bar}
                             placeholder="What are you looking for?"
                         />
                         <div className={search.slash}>/</div>
                     </div>
                     <button
+                        type="submit"
                         className={search.button}
                         aria-label="Search"
                     >
                         <SearchIcon className={search.button_icon} />
                     </button>
-                </div>
+                </Form>
                 <nav className={`${css.navbar_container} ${css.justify_right}`}>
                     <ul className={css.navbar_list}>
                         <li className={css.navbar_item}>
